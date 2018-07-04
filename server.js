@@ -1,5 +1,12 @@
-const Koa = require('koa');
+import Koa from 'koa';
+import mongoose from 'mongoose';
 const app = new Koa();
+
+// Connect to database
+mongoose
+  .connect('mongodb://localhost:27017/koa-item')
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
 // x-response-time
 
