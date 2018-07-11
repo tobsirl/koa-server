@@ -1,6 +1,9 @@
 import Koa from 'koa';
 import mongoose from 'mongoose';
-const app = new Koa();
+import bodyParser from 'koa-bodyparser';
+import helmet from 'koa-helmet';
+import logger from 'koa-logger';
+import routing from './routes/items';
 
 // Connect to database
 mongoose
@@ -8,28 +11,18 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-// x-response-time
+// Create Koa Application
+const app = new Koa();
 
-app.use(async (ctx, next) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  ctx.set('X-Response-Time', `${ms}ms`);
-});
+app
+  .use(logger())
+  .use(bodyParser())
+  .use(helmet());
 
-// logger
+//routing(app);
 
-app.use(async (ctx, next) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}`);
-});
+app.listen(3000, () =>
+  console.log(`✅  The server is running at http://localhost:3000/`)
+);
 
-// response
-
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-});
-
-app.listen(3000);
+export default app;
